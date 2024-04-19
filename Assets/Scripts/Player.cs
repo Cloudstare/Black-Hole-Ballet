@@ -17,6 +17,10 @@ public class Player : MonoBehaviour
     void Start()
     {
        isRigidbody =  TryGetComponent<Rigidbody2D>(out rb);
+        if(isRigidbody){
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        }
+    
     }
 
     // Update is called once per frame
