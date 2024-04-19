@@ -13,9 +13,14 @@ public class Player : MonoBehaviour
     public GameObject blackHolePrefab; // Przypisz w inspektorze prefabrykat czarnej dziury
     private GameObject currentBlackHole;
 
+    private Animator animator;
+    private bool isGrounded;
+
     // Start is called before the first frame update
     void Start()
     {
+
+        animator = GetComponent<Animator>();
        isRigidbody =  TryGetComponent<Rigidbody2D>(out rb);
         if(isRigidbody){
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
@@ -43,6 +48,7 @@ public class Player : MonoBehaviour
         if( isRigidbody && Input.GetButtonDown("Jump"))
         {
             rb.velocity = new Vector2(rb.velocity.x, playerJump);
+            isGrounded = false;
         }
 
         if (Input.GetMouseButtonDown(0)) // 0 oznacza lewy przycisk myszy
@@ -69,6 +75,16 @@ public class Player : MonoBehaviour
             currentBlackHole = null;
         }
 
+        animator.SetBool("run", horizontalD != 0);
+        animator.SetBool("onground", isGrounded);
         
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
+        }
     }
 }
