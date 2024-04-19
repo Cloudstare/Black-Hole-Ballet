@@ -26,11 +26,18 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float Hdirection;
+        float horizontalD = Input.GetAxis("Horizontal");
 
-        if( isRigidbody && (Hdirection = Input.GetAxis("Horizontal")) != 0)
+        if(horizontalD > 0.01f){
+            transform.localScale = new Vector3(2, 2, 1);
+        }
+        else if(horizontalD < -0.01f){
+            transform.localScale = new Vector3(-2, 2, 1);
+        }
+
+        if( isRigidbody && horizontalD != 0)
         {
-            rb.velocity = new Vector2(Hdirection * playerSpeed, rb.velocity.y);
+            rb.velocity = new Vector2(horizontalD * playerSpeed, rb.velocity.y);
         }
 
         if( isRigidbody && Input.GetButtonDown("Jump"))
