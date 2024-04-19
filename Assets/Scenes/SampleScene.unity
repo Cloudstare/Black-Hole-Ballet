@@ -676,6 +676,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerSpeed: 10
   playerJump: 10
+  blackHolePrefab: {fileID: 1361434352528470420, guid: 2f66f45cbcd9e4c0d99ffef81a73cf26, type: 3}
 --- !u!50 &1192180029
 Rigidbody2D:
   serializedVersion: 4
