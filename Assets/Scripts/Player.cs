@@ -9,6 +9,10 @@ public class Player : MonoBehaviour
 
     private Rigidbody2D rb;
     private bool isRigidbody = false;
+
+    public GameObject blackHolePrefab; // Przypisz w inspektorze prefabrykat czarnej dziury
+    private GameObject currentBlackHole;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,5 +33,31 @@ public class Player : MonoBehaviour
         {
             rb.velocity = new Vector2(rb.velocity.x, playerJump);
         }
+
+        if (Input.GetMouseButtonDown(0)) // 0 oznacza lewy przycisk myszy
+        {
+        Vector3 mousePosition = Input.mousePosition;
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+
+        // Ignoruj współrzędną Z
+        worldPosition.z = 0;
+
+        // Jeśli istnieje obecna czarna dziura, zniszcz ją
+        if (currentBlackHole != null)
+        {
+            Destroy(currentBlackHole);
+        }
+
+        // Tworzy instancję czarnej dziury na pozycji myszki i zapisuje referencję do niej
+        currentBlackHole = Instantiate(blackHolePrefab, worldPosition, Quaternion.identity);
+        }
+
+        if( Input.GetMouseButtonDown(1) && currentBlackHole != null)
+        {
+            Destroy(currentBlackHole);
+            currentBlackHole = null;
+        }
+
+        
     }
 }
