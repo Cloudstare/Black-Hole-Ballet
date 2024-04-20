@@ -15,12 +15,12 @@ public class CameraController : MonoBehaviour
     }
 
     void Update()
-{
-    float x = player.transform.position.x;
-    float y = player.transform.position.y + yOffset;
-    float direction = player.transform.localScale.x;
-    Vector3 targetPosition = new Vector3(x, y, gameObject.transform.position.z);
-    Vector3 offset = new Vector3(xOffset * Mathf.Sign(direction), 0, 0);
-    gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, targetPosition + offset, lerpAmount);
-}
+    {
+        float x = player.transform.position.x;
+        float y = player.transform.position.y + yOffset;
+        float direction = player.transform.localScale.x;
+        Vector3 targetPosition = new Vector3(x, y, gameObject.transform.position.z);
+        Vector3 offset = new Vector3(xOffset * Mathf.Sign(direction), 0, 0);
+        gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, targetPosition + offset, lerpAmount);
+    }
 }
