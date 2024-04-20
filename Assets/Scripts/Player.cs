@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
     private bool isRigidbody = false;
 
-    public GameObject blackHolePrefab; // Przypisz w inspektorze prefabrykat czarnej dziury
+    public GameObject blackHolePrefab;
     private GameObject currentBlackHole;
 
     private Animator animator;
@@ -45,7 +45,7 @@ public class Player : MonoBehaviour
             rb.velocity = new Vector2(horizontalD * playerSpeed, rb.velocity.y);
         }
 
-        if( isRigidbody && Input.GetButtonDown("Jump"))
+        if( isRigidbody && Input.GetButtonDown("Jump") && isGrounded)
         {
             rb.velocity = new Vector2(rb.velocity.x, playerJump);
             isGrounded = false;
@@ -87,4 +87,5 @@ public class Player : MonoBehaviour
             isGrounded = true;
         }
     }
+
 }
