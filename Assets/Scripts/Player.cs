@@ -6,6 +6,8 @@ public class Player : MonoBehaviour
 {
     public float playerSpeed = 10.0f;
     public float playerJump = 10.0f;
+    public float blackHoleCooldown;
+    private float lastBlackHoleTime;
     private Rigidbody2D rb;
     private bool isRigidbody = false;
     public GameObject blackHolePrefab;
@@ -71,7 +73,7 @@ public class Player : MonoBehaviour
 
     private void BlackHole(){
         //If the player clicks the left mouse button, create a black hole at the mouse position
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0)  && Time.time - lastBlackHoleTime >= blackHoleCooldown && currentBlackHole == null)
         {
             // Get the mouse position in world space
             Vector3 mousePosition = Input.mousePosition;
@@ -82,19 +84,24 @@ public class Player : MonoBehaviour
             worldPosition.z = 0;
 
             // Destroy the current black hole if it exists
-            if (currentBlackHole != null)
-            {
-                Destroy(currentBlackHole);
-            }
-            
+            // if (currentBlackHole != null)
+            // {
+            //     Destroy(currentBlackHole);
+            //     // Aktualizuj czas ostatniej czarnej dziury
+            //     lastBlackHoleTime = Time.time;
+            // }
+
             // Create an instance of the black hole at the mouse position and save a reference to it
             currentBlackHole = Instantiate(blackHolePrefab, worldPosition, Quaternion.identity);
+
+            
         }
 
         if( Input.GetMouseButtonDown(1) && currentBlackHole != null)
         {
             Destroy(currentBlackHole);
             currentBlackHole = null;
+            lastBlackHoleTime = Time.time;
         }
     }
 
