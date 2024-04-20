@@ -8,28 +8,27 @@ public class BlackHole : MonoBehaviour
     public float pullRadius = 5.0f;
     void FixedUpdate()
     {
-        // Pobiera obiekt gracza
+        // Get the player object
         GameObject player = GameObject.FindWithTag("Player");
         if (player != null)
         {
-            // Pobiera komponent Rigidbody2D z obiektu gracza
+            // Get the Rigidbody2D component from the player object
             Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
             if (playerRb != null)
             {
-                // Wektor kierunku od gracza do czarnej dziury
+                // Calculate the direction from the player to the black hole
                 Vector2 direction = (Vector2)transform.position - playerRb.position;
-                // Oblicza odległość między graczem a czarną dziurą
+                // Calculate the distance between the player and the black hole
                 float distance = direction.magnitude;
 
-                // Sprawdza, czy gracz jest w zasięgu oddziaływania czarnej dziury
+                // Check if the player is within the pull radius of the black hole
                 if (distance > 0 && distance < pullRadius)
                 {
-
-                    // Oblicza siłę przyciągania tak że, im bliżej gracz jest do czarnej dziury, tym większa siła przyciągania. Używamy współczynnika ((pullRadius - distance) / pullRadius) aby uzyskać ten efekt
+                    // Calculate the pull force based on the distance from the black hole. The closer the player is to the black hole, the stronger the pull force. We use the coefficient ((pullRadius - distance) / pullRadius) to achieve this effect
                     float forceMagnitude = pullForce * ((pullRadius - distance) / pullRadius);
-                    // Oblicza siłę przyciągania
+                    // Calculate the force vector
                     Vector2 force = direction.normalized * forceMagnitude;
-                    // Dodaje siłę przyciągania do gracza
+                    // Add the pull force to the player
                     playerRb.AddForce(force);
                 }
             }
