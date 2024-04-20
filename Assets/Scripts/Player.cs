@@ -6,75 +6,33 @@ public class Player : MonoBehaviour
 {
     public float playerSpeed = 10.0f;
     public float playerJump = 10.0f;
-
+    public float blackHoleCooldown;
+    private float lastBlackHoleTime;
     private Rigidbody2D rb;
     private bool isRigidbody = false;
-
-    public GameObject blackHolePrefab; // Przypisz w inspektorze prefabrykat czarnej dziury
+    public GameObject blackHolePrefab;
     private GameObject currentBlackHole;
-
     private Animator animator;
     private bool isGrounded;
-
-    // Start is called before the first frame update
+    private float horizontalD;
     void Start()
     {
-
+        //Get the Animator component from the object
         animator = GetComponent<Animator>();
-       isRigidbody =  TryGetComponent<Rigidbody2D>(out rb);
+        //Check if the object has a Rigidbody2D component
+        isRigidbody =  TryGetComponent<Rigidbody2D>(out rb);
+        //Freeze rotation of the player
         if(isRigidbody){
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
-    
     }
-
-    // Update is called once per frame
     void Update()
     {
-        float horizontalD = Input.GetAxis("Horizontal");
+        horizontalD = Input.GetAxis("Horizontal");
 
-        if(horizontalD > 0.01f){
-            transform.localScale = new Vector3(2, 2, 1);
-        }
-        else if(horizontalD < -0.01f){
-            transform.localScale = new Vector3(-2, 2, 1);
-        }
-
-        if( isRigidbody && horizontalD != 0)
-        {
-            rb.velocity = new Vector2(horizontalD * playerSpeed, rb.velocity.y);
-        }
-
-        if( isRigidbody && Input.GetButtonDown("Jump"))
-        {
-            rb.velocity = new Vector2(rb.velocity.x, playerJump);
-            isGrounded = false;
-        }
-
-        if (Input.GetMouseButtonDown(0)) // 0 oznacza lewy przycisk myszy
-        {
-        Vector3 mousePosition = Input.mousePosition;
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-
-        // Ignoruj współrzędną Z
-        worldPosition.z = 0;
-
-        // Jeśli istnieje obecna czarna dziura, zniszcz ją
-        if (currentBlackHole != null)
-        {
-            Destroy(currentBlackHole);
-        }
-
-        // Tworzy instancję czarnej dziury na pozycji myszki i zapisuje referencję do niej
-        currentBlackHole = Instantiate(blackHolePrefab, worldPosition, Quaternion.identity);
-        }
-
-        if( Input.GetMouseButtonDown(1) && currentBlackHole != null)
-        {
-            Destroy(currentBlackHole);
-            currentBlackHole = null;
-        }
-
+        Move();
+        Jump();
+        BlackHole();
         animator.SetBool("run", horizontalD != 0);
         animator.SetBool("onground", isGrounded);
         
@@ -87,4 +45,64 @@ public class Player : MonoBehaviour
             isGrounded = true;
         }
     }
+
+    private void Move(){
+        // Flip the player depending on the direction
+        if(horizontalD > 0.01f){
+            transform.localScale = new Vector3(2, 2, 1);
+        }
+        else if(horizontalD < -0.01f){
+            transform.localScale = new Vector3(-2, 2, 1);
+        }
+
+        if( isRigidbody && horizontalD != 0)
+        {
+            // Set the velocity vector (horizontalD ranges from -1 to 1, and playerSpeed is the player's speed set in the inspector)
+            rb.velocity = new Vector2(horizontalD * playerSpeed, rb.velocity.y);
+        }
+    }
+
+    private void Jump(){
+        //Check if the player is on the ground to jump
+        if( isRigidbody && Input.GetButtonDown("Jump") && isGrounded)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, playerJump);
+            isGrounded = false;
+        }
+    }
+
+    private void BlackHole(){
+        //If the player clicks the left mouse button, create a black hole at the mouse position
+        if (Input.GetMouseButtonDown(0)  && Time.time - lastBlackHoleTime >= blackHoleCooldown && currentBlackHole == null)
+        {
+            // Get the mouse position in world space
+            Vector3 mousePosition = Input.mousePosition;
+            // Convert the mouse position to world space
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+
+            // Ignore the Z coordinate
+            worldPosition.z = 0;
+
+            // Destroy the current black hole if it exists
+            // if (currentBlackHole != null)
+            // {
+            //     Destroy(currentBlackHole);
+            //     // Aktualizuj czas ostatniej czarnej dziury
+            //     lastBlackHoleTime = Time.time;
+            // }
+
+            // Create an instance of the black hole at the mouse position and save a reference to it
+            currentBlackHole = Instantiate(blackHolePrefab, worldPosition, Quaternion.identity);
+
+            
+        }
+
+        if( Input.GetMouseButtonDown(1) && currentBlackHole != null)
+        {
+            Destroy(currentBlackHole);
+            currentBlackHole = null;
+            lastBlackHoleTime = Time.time;
+        }
+    }
+
 }

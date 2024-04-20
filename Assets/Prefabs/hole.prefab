@@ -98,8 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a55a4e40918f947618fd3a313d78a66e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pullForce: 15
-  pullRadius: 10
+  pullForce: 1500
+  pullRadius: 1000
 --- !u!50 &5734601050841060652
 Rigidbody2D:
   serializedVersion: 4
