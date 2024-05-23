@@ -12,6 +12,6 @@ public class Timer : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
-        timerText.text = "Time: " + timer.ToString("F1"); // F2 oznacza formatowanie do dwóch miejsc po przecinku
+        timerText.text = "Time: " + timer.ToString("F1");
     }
 }
