@@ -25,7 +25,7 @@ public class BlackHole : MonoBehaviour
                 if (distance > 0 && distance < pullRadius)
                 {
                     // Calculate the pull force based on the distance from the black hole. The closer the player is to the black hole, the stronger the pull force. We use the coefficient ((pullRadius - distance) / pullRadius) to achieve this effect
-                    float forceMagnitude = pullForce * ((pullRadius - distance) / pullRadius);
+                    float forceMagnitude = pullForce * ((pullRadius - (distance/3)) / pullRadius);
                     // Calculate the force vector
                     Vector2 force = direction.normalized * forceMagnitude;
                     // Add the pull force to the player
