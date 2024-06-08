@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BlackHole : MonoBehaviour
 {
-    public float pullForce = 10.0f;
+    public float pullForce = 20.0f;
     public float pullRadius = 5.0f;
     void FixedUpdate()
     {

@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pullForce: 25
-  pullRadius: 15
+  pullRadius: 20
 --- !u!50 &5734601050841060652
 Rigidbody2D:
   serializedVersion: 4
