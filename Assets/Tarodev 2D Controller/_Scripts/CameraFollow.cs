@@ -1,23 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class NewBehaviourScript : MonoBehaviour
+public class CameraFollow : MonoBehaviour
 {
-   public Transform target;       // Reference to the player's transform
-    public Vector3 offset;         // Offset from the player's position
-    public float smoothSpeed = 0.125f; // Adjusts how smooth the camera movement is
+    //Room camera
+    [SerializeField] private float speed;
+    private float currentPosX;
+    private Vector3 velocity = Vector3.zero;
 
-    private void LateUpdate()
+    //Follow player
+    [SerializeField] private Transform player;
+    [SerializeField] private float aheadDistance;
+    [SerializeField] private float cameraSpeed;
+    private float lookAhead;
+
+    private void Update()
     {
-        if (target != null)
-        {
-            Vector3 desiredPosition = target.position + offset;
-            // Lock the Z position
-            desiredPosition.z = transform.position.z;
-            
-            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
-            transform.position = smoothedPosition;
-        }
+        //Room camera
+        // transform.position = Vector3.SmoothDamp(transform.position, new Vector3(currentPosX, transform.position.y, transform.position.z), ref velocity, speed);
+
+        // Follow player
+        transform.position = new Vector3(player.position.x + lookAhead, transform.position.y, transform.position.z);
+        lookAhead = Mathf.Lerp(lookAhead, (aheadDistance * player.localScale.x), Time.deltaTime * cameraSpeed);
     }
+
+    // public void MoveToNewRoom(Transform _newRoom)
+    // {
+    //     currentPosX = _newRoom.position.x;
+    // }
 }
