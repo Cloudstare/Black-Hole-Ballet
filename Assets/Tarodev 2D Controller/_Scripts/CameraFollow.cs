@@ -2,29 +2,58 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    //Room camera
-    [SerializeField] private float speed;
-    private float currentPosX;
-    private Vector3 velocity = Vector3.zero;
-
-    //Follow player
     [SerializeField] private Transform player;
-    [SerializeField] private float aheadDistance;
-    [SerializeField] private float cameraSpeed;
-    private float lookAhead;
+    [SerializeField] private float smoothTime = 0.3f;
+    [SerializeField] private Vector3 offset = new Vector3(0, 1, 0);
+    [SerializeField] private float lookAheadDistance = 2;
+    [SerializeField] private float lookAheadSpeed = 1;
+    [SerializeField] private float stopTime = 0.5f;
+
+    private Vector3 velOffset;
+    private Vector3 vel;
+    private Vector3 lookAheadVel;
+    private bool isMoving;
+    private float moveThreshold = 0.1f;
+    private float stopTimer;
 
     private void Update()
     {
-        //Room camera
-        // transform.position = Vector3.SmoothDamp(transform.position, new Vector3(currentPosX, transform.position.y, transform.position.z), ref velocity, speed);
-
-        // Follow player
-        transform.position = new Vector3(player.position.x + lookAhead, transform.position.y, transform.position.z);
-        lookAhead = Mathf.Lerp(lookAhead, (aheadDistance * player.localScale.x), Time.deltaTime * cameraSpeed);
+        if (player != null && Vector3.Distance(player.position, transform.position) > moveThreshold)
+        {
+            isMoving = true;
+            stopTimer = stopTime;
+        }
+        else if (isMoving)
+        {
+            stopTimer -= Time.deltaTime;
+            if (stopTimer <= 0)
+            {
+                isMoving = false;
+            }
+        }
     }
 
-    // public void MoveToNewRoom(Transform _newRoom)
-    // {
-    //     currentPosX = _newRoom.position.x;
-    // }
+    private void LateUpdate()
+    {
+        if (player != null && isMoving)
+        {
+            var projectedPos = player.position + player.right * lookAheadDistance;
+            velOffset = Vector3.SmoothDamp(velOffset, projectedPos - player.position, ref lookAheadVel, lookAheadSpeed * Time.deltaTime);
+
+            Step(smoothTime);
+        }
+        else
+        {
+            Step(smoothTime * 2); // Continue moving the camera for a short while after the player stops
+        }
+    }
+
+    private void OnValidate() => Step(0);
+
+    private void Step(float time)
+    {
+        var goal = player.position + offset + velOffset;
+        goal.z = -10;
+        transform.position = Vector3.SmoothDamp(transform.position, goal, ref vel, time);
+    }
 }
