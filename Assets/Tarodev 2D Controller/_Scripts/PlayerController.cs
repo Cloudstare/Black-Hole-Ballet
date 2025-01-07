@@ -7,11 +7,14 @@ namespace TarodevController
     public class PlayerController : MonoBehaviour, IPlayerController
     {
         [SerializeField] private ScriptableStats _stats;
+        [SerializeField] private GameObject blackHolePrefab; // Prefab czarnej dziury
+
         private Rigidbody2D _rb;
         private CapsuleCollider2D _col;
         private FrameInput _frameInput;
         private Vector2 _frameVelocity;
         private bool _cachedQueryStartInColliders;
+        private GameObject _currentBlackHole; // Obecna czarna dziura
 
         #region Interface
 
@@ -36,6 +39,10 @@ namespace TarodevController
         {
             _time += Time.deltaTime;
             GatherInput();
+
+            // Obsługa czarnej dziury
+            if (Input.GetMouseButtonDown(0)) CreateBlackHole();
+            if (Input.GetMouseButtonDown(1)) DestroyBlackHole();
         }
 
         private void GatherInput()
@@ -72,7 +79,7 @@ namespace TarodevController
         }
 
         #region Collisions
-        
+
         private float _frameLeftGrounded = float.MinValue;
         private bool _grounded;
 
@@ -104,7 +111,6 @@ namespace TarodevController
         }
 
         #endregion
-
 
         #region Jumping
 
@@ -176,6 +182,28 @@ namespace TarodevController
         #endregion
 
         private void ApplyMovement() => _rb.velocity = _frameVelocity;
+
+        #region Black Hole
+
+        private void CreateBlackHole()
+        {
+            if (_currentBlackHole != null) return;
+
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePos.z = 0; // Ustaw z na 0, aby czarna dziura była w płaszczyźnie gry
+
+            _currentBlackHole = Instantiate(blackHolePrefab, mousePos, Quaternion.identity);
+        }
+
+        private void DestroyBlackHole()
+        {
+            if (_currentBlackHole == null) return;
+
+            Destroy(_currentBlackHole);
+            _currentBlackHole = null;
+        }
+
+        #endregion
 
 #if UNITY_EDITOR
         private void OnValidate()
