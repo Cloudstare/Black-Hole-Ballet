@@ -1,14 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BlackHole : MonoBehaviour
 {
     public float pullForce = 20.0f;
     public float pullRadius = 5.0f;
-    void FixedUpdate()
+    public float orbitRadius = 1.0f; // Zmienna do ustawiania wielkości orbity w edytorze Unity
+    public float orbitSpeedOffset = 1.0f; // Zmienna do ustawiania offsetu prędkości orbity w edytorze Unity
+    public float maxPullForce = 50.0f; // Zmienna do ustawiania maksymalnej siły przyciągania
+    private bool isInOrbit = false;
+    private Vector2 entryVelocity;
+
+    private void FixedUpdate()
     {
-        // Get the player object
         GameObject player = GameObject.FindWithTag("Player");
         if (player != null)
         {
@@ -21,24 +24,40 @@ public class BlackHole : MonoBehaviour
                 // Calculate the distance between the player and the black hole
                 float distance = direction.magnitude;
 
-                // Check if the player is within the pull radius of the black hole
-                if (distance > 0 && distance < pullRadius)
+                // Calculate the pull force based on the distance from the black hole. The closer the player is to the black hole, the stronger the pull force. We use the coefficient ((pullRadius - distance) / pullRadius) to achieve this effect
+                float forceMagnitude = pullForce * ((pullRadius - distance) / pullRadius) * 2.0f; // Increase the pull force
+                // Limit the pull force to the maximum value
+                forceMagnitude = Mathf.Min(forceMagnitude, maxPullForce);
+                // Calculate the force vector
+                Vector2 force = direction.normalized * forceMagnitude;
+                // Add the pull force to the player
+                playerRb.AddForce(force);
+
+                // Check if the player is very close to the black hole to enter a stable orbit
+                if (distance < orbitRadius)
                 {
-                    // Calculate the pull force based on the distance from the black hole. The closer the player is to the black hole, the stronger the pull force. We use the coefficient ((pullRadius - distance) / pullRadius) to achieve this effect
-                    float forceMagnitude = pullForce * ((pullRadius - distance) / pullRadius) * 2.0f; // Increase the pull force
-                    // Calculate the force vector
-                    Vector2 force = direction.normalized * forceMagnitude;
-                    // Add the pull force to the player
-                    playerRb.AddForce(force);
-                    // Apply a tangential force to make the player orbit around the black hole
-                    Vector2 tangentialForce = Vector2.Perpendicular(direction).normalized * forceMagnitude * 0.5f;
-                    playerRb.AddForce(tangentialForce);
-                    // Apply additional force to make the player orbit when very close to the black hole
-                    if (distance < pullRadius * 0.2f)
+                    if (!isInOrbit)
                     {
-                        Vector2 perpendicularForce = Vector2.Perpendicular(direction).normalized * forceMagnitude * 0.5f;
-                        playerRb.AddForce(perpendicularForce);
+                        isInOrbit = true;
+                        entryVelocity = playerRb.velocity; // Save the entry velocity
                     }
+                    else
+                    {
+                        // Determine the direction of the orbit based on the player's position relative to the black hole
+                        Vector2 tangentialDirection = Vector2.Perpendicular(direction).normalized;
+                        if (Vector2.Dot(playerRb.velocity, tangentialDirection) < 0)
+                        {
+                            tangentialDirection = -tangentialDirection;
+                        }
+                        // Calculate the tangential force for a stable orbit
+                        Vector2 tangentialForce = tangentialDirection * (entryVelocity.magnitude + orbitSpeedOffset);
+                        // Add the tangential force to the player
+                        playerRb.AddForce(tangentialForce);
+                    }
+                }
+                else
+                {
+                    isInOrbit = false;
                 }
             }
         }
