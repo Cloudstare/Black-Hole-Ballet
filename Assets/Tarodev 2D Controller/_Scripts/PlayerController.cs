@@ -74,7 +74,7 @@ namespace TarodevController
             HandleJump();
             HandleDirection();
             HandleGravity();
-            
+
             ApplyMovement();
         }
 
@@ -98,6 +98,7 @@ namespace TarodevController
                 _coyoteUsable = true;
                 _bufferedJumpUsable = true;
                 _endedJumpEarly = false;
+                _canDoubleJump = true; // Reset podwójnego skoku
                 GroundedChanged?.Invoke(true, Mathf.Abs(_frameVelocity.y));
             }
             else if (_grounded && !groundHit)
@@ -118,6 +119,7 @@ namespace TarodevController
         private bool _bufferedJumpUsable;
         private bool _endedJumpEarly;
         private bool _coyoteUsable;
+        private bool _canDoubleJump = true; // Flaga podwójnego skoku
         private float _timeJumpWasPressed;
 
         private bool HasBufferedJump => _bufferedJumpUsable && _time < _timeJumpWasPressed + _stats.JumpBuffer;
@@ -129,7 +131,14 @@ namespace TarodevController
 
             if (!_jumpToConsume && !HasBufferedJump) return;
 
-            if (_grounded || CanUseCoyote) ExecuteJump();
+            if (_grounded || CanUseCoyote)
+            {
+                ExecuteJump();
+            }
+            else if (_canDoubleJump) // Sprawdzanie podwójnego skoku
+            {
+                ExecuteDoubleJump();
+            }
 
             _jumpToConsume = false;
         }
@@ -140,6 +149,14 @@ namespace TarodevController
             _timeJumpWasPressed = 0;
             _bufferedJumpUsable = false;
             _coyoteUsable = false;
+            _frameVelocity.y = _stats.JumpPower;
+            Jumped?.Invoke();
+        }
+
+        private void ExecuteDoubleJump()
+        {
+            _endedJumpEarly = false;
+            _canDoubleJump = false; // Wyłącz możliwość kolejnego podwójnego skoku
             _frameVelocity.y = _stats.JumpPower;
             Jumped?.Invoke();
         }
