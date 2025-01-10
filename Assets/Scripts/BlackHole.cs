@@ -1,7 +1,9 @@
 using UnityEngine;
+using System.Collections;
 
 public class BlackHole : MonoBehaviour
 {
+    public float lifeTime = 1.0f;
     public float pullForce = 20.0f;
     public float pullRadius = 5.0f;
     public float orbitRadius = 1.0f; // Zmienna do ustawiania wielkości orbity w edytorze Unity
@@ -9,6 +11,18 @@ public class BlackHole : MonoBehaviour
     public float maxPullForce = 50.0f; // Zmienna do ustawiania maksymalnej siły przyciągania
     private bool isInOrbit = false;
     private Vector2 entryVelocity;
+
+    private void Start()
+    {
+        // Uruchom coroutine, która usunie czarną dziurę po 2 sekundach
+        StartCoroutine(DestroyBlackHoleAfterDelay(lifeTime));
+    }
+
+    private IEnumerator DestroyBlackHoleAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Destroy(gameObject);
+    }
 
     private void FixedUpdate()
     {
