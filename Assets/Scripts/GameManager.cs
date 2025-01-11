@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -52,7 +53,29 @@ public class GameManager : MonoBehaviour
     private void SaveGameTime()
     {
         float gameTime = _endTime - _startTime;
-        PlayerPrefs.SetFloat("GameTime", gameTime);
+        List<float> gameTimes = GetGameTimes();
+        gameTimes.Add(gameTime);
+        SaveGameTimes(gameTimes);
         Debug.Log("Game finished! Time: " + gameTime + " seconds");
+    }
+
+    public List<float> GetGameTimes()
+    {
+        List<float> gameTimes = new List<float>();
+        int count = PlayerPrefs.GetInt("GameTimesCount", 0);
+        for (int i = 0; i < count; i++)
+        {
+            gameTimes.Add(PlayerPrefs.GetFloat("GameTime" + i));
+        }
+        return gameTimes;
+    }
+
+    private void SaveGameTimes(List<float> gameTimes)
+    {
+        PlayerPrefs.SetInt("GameTimesCount", gameTimes.Count);
+        for (int i = 0; i < gameTimes.Count; i++)
+        {
+            PlayerPrefs.SetFloat("GameTime" + i, gameTimes[i]);
+        }
     }
 }
