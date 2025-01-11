@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
+using TarodevController; // Dodaj odpowiednią przestrzeń nazw
 
 public class EndScreenManager : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class EndScreenManager : MonoBehaviour
             scores.Add((gameTimes[i], "Player"));
         }
 
-        // Sort the list by time in ascending order and take the top 7 results
+        // Sort and take top 7 scores
         scores = scores.OrderBy(score => score.time).Take(7).ToList();
 
         // Prepare the final text
@@ -42,6 +43,13 @@ public class EndScreenManager : MonoBehaviour
 
         // Display the results on the end screen
         endScreenText.text = timesText;
-    }
 
+        // Disable player movement and make player disappear
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            player.GetComponent<PlayerController>().enabled = false;
+            player.SetActive(false); // Make player disappear
+        }
+    }
 }
