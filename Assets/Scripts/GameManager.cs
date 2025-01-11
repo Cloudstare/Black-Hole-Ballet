@@ -8,6 +8,9 @@ public class GameManager : MonoBehaviour
     private float _endTime;
     private bool _gameFinished;
 
+    public float StartTime => _startTime;
+    public bool GameFinished => _gameFinished;
+
     private void Awake()
     {
         if (Instance == null)

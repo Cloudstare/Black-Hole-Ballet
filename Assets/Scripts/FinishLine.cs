@@ -7,6 +7,8 @@ public class FinishLine : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             GameManager.Instance.FinishGame();
+            float gameTime = PlayerPrefs.GetFloat("GameTime");
+            Debug.Log("Final game time: " + gameTime + " seconds");
         }
     }
 }
