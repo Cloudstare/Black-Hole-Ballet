@@ -78,4 +78,10 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.SetFloat("GameTime" + i, gameTimes[i]);
         }
     }
+
+    public void ResetGame()
+    {
+        _startTime = Time.time;
+        _gameFinished = false;
+    }
 }
