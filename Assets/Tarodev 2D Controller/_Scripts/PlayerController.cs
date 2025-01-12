@@ -65,6 +65,8 @@ namespace TarodevController
                 _jumpToConsume = true;
                 _timeJumpWasPressed = _time;
             }
+            if (Input.GetKeyDown(KeyCode.Escape))
+                MainMenu.GoToMenu();
         }
 
         private void FixedUpdate()
