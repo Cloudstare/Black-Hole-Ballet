@@ -44,7 +44,5 @@ Thumbs.db
 .vscode/
 *.bak
 
-Logs/
-UserSettings/Layouts/default-2022.dwlt
+Logs/*
 Logs/shadercompiler-UnityShaderCompiler0.log
-UserSettings/Layouts/default-2022.dwlt
