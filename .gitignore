@@ -44,6 +44,4 @@ Thumbs.db
 .vscode/
 *.bak
 
-
-
-.Logs/
+Logs/
