@@ -7,14 +7,15 @@ TagManager:
   - Wall
   - Ground
   - BlackHole
+  - Main Camera
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - 
+  - BlackHole
   - 
   - 
   - 
