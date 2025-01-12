@@ -23,4 +23,8 @@ public class MainMenu : MonoBehaviour
     {
         SceneManager.LoadScene("MainMenu");
     }
+    public static void GoToLeaderboard()
+    {
+        SceneManager.LoadScene("Leaderboard");
+    }
 }
