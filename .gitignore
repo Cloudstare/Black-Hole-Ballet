@@ -44,4 +44,5 @@ Thumbs.db
 .vscode/
 *.bak
 
-Logs/
+Logs/*
+Logs/shadercompiler-UnityShaderCompiler0.log
