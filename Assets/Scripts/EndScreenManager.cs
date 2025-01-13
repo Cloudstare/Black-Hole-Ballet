@@ -2,8 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
-using System.Linq;
-using TarodevController; // Dodaj odpowiednią przestrzeń nazw
+using TarodevController; // Adjust as necessary
 
 public class EndScreenManager : MonoBehaviour
 {
@@ -13,15 +12,19 @@ public class EndScreenManager : MonoBehaviour
 
     private void Start()
     {
-        gameObject.SetActive(false); // Ukryj ekran końcowy na początku
+        gameObject.SetActive(false); // Hide the end screen initially
     }
-
 
     public void ShowEndScreen(float gameTime)
     {
         gameObject.SetActive(true);
 
-        
+        // Format the time for display
+        int minutes = Mathf.FloorToInt(gameTime / 60F);
+        int seconds = Mathf.FloorToInt(gameTime % 60F);
+
+        // Display a congratulatory message with the time
+        endScreenText.text = $"Congratulations!";
 
         // Disable player movement
         GameObject player = GameObject.FindWithTag("Player");
@@ -43,7 +46,6 @@ public class EndScreenManager : MonoBehaviour
 
     public void PlayAgain()
     {
-        GameManager.Instance.ResetGame();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene("MainMenu");
     }
 }
