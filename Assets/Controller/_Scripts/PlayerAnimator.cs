@@ -2,29 +2,26 @@ using UnityEngine;
 
 namespace TarodevController
 {
-    /// <summary>
-    /// VERY primitive animator example.
-    /// </summary>
     public class PlayerAnimator : MonoBehaviour
     {
-        [Header("References")] [SerializeField]
-        private Animator _anim;
-
+        [Header("References")] 
+        [SerializeField] private Animator _anim;
         [SerializeField] private SpriteRenderer _sprite;
 
-        [Header("Settings")] [SerializeField, Range(1f, 3f)]
-        private float _maxIdleSpeed = 2;
-
+        [Header("Settings")] 
+        [SerializeField, Range(1f, 3f)] private float _maxIdleSpeed = 2;
         [SerializeField] private float _maxTilt = 5;
         [SerializeField] private float _tiltSpeed = 20;
 
-        [Header("Particles")] [SerializeField] private ParticleSystem _jumpParticles;
+        [Header("Particles")] 
+        [SerializeField] private ParticleSystem _jumpParticles;
         [SerializeField] private ParticleSystem _launchParticles;
         [SerializeField] private ParticleSystem _moveParticles;
         [SerializeField] private ParticleSystem _landParticles;
 
-        [Header("Audio Clips")] [SerializeField]
-        private AudioClip[] _footsteps;
+        [Header("Audio Clips")] 
+        [SerializeField] private AudioClip[] _footsteps;
+        [SerializeField] private AudioClip _jumpSound; // Dodano pole na dźwięk skoku
 
         private AudioSource _source;
         private IPlayerController _player;
@@ -45,6 +42,8 @@ namespace TarodevController
             _moveParticles.Play();
         }
 
+        
+
         private void OnDisable()
         {
             _player.Jumped -= OnJumped;
@@ -56,6 +55,8 @@ namespace TarodevController
         private void Update()
         {
             if (_player == null) return;
+
+            _anim.SetBool("Moving", true);
 
             DetectGroundColor();
 
@@ -89,19 +90,24 @@ namespace TarodevController
             _anim.SetTrigger(JumpKey);
             _anim.ResetTrigger(GroundedKey);
 
-
             if (_grounded) // Avoid coyote
             {
                 SetColor(_jumpParticles);
                 SetColor(_launchParticles);
                 _jumpParticles.Play();
+
+                // Odtwórz dźwięk skoku
+                if (_jumpSound != null)
+                {
+                    _source.PlayOneShot(_jumpSound);
+                }
             }
         }
 
         private void OnGroundedChanged(bool grounded, float impact)
         {
             _grounded = grounded;
-            
+
             if (grounded)
             {
                 DetectGroundColor();

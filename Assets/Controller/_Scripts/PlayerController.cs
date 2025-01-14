@@ -25,6 +25,12 @@ namespace TarodevController
 
         #endregion
 
+        public bool IsRunning()
+        {
+            // Sprawdza, czy prędkość pozioma gracza jest większa niż pewien próg
+            return Mathf.Abs(_rb.velocity.x) > 0.1f;
+        }
+
         private float _time;
 
         private void Awake()
